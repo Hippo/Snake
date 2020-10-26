@@ -1,0 +1,12 @@
+# Cmake
+cmake-build-debug/
+cmake-build-release/
+
+# Idea
+.idea/
+
+# Git
+.git/
+
+# MacOS
+.DS_Store
