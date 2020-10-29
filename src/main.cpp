@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "window/game_window.hpp"
+#include "game/snake_game.hpp"
 
 int main() {
     try {
-        Window(800, 600, "Snake").run();
+        Game().run();
     } catch (const std::runtime_error& e) {
         std::cerr << e.what() << std::endl;
         return -1;

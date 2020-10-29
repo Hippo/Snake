@@ -1,11 +1,11 @@
-#include <stdexcept>
-
 #include "window/game_window.hpp"
 
+#include <stdexcept>
 
-Window::Window(const int width, const int height, const char *title) {
-    m_Game = new Game();
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
+Window::Window(const int width, const int height, const std::string_view& title) : m_Width(width), m_Height(height){
     if (glfwInit()) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -13,7 +13,7 @@ Window::Window(const int width, const int height, const char *title) {
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-        m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        m_Window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
         glfwMakeContextCurrent(m_Window);
 
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
@@ -31,15 +31,30 @@ Window::Window(const int width, const int height, const char *title) {
 }
 
 Window::~Window() {
-    delete m_Game;
     glfwTerminate();
 }
 
-void Window::run() const {
-    while (!glfwWindowShouldClose(m_Window)) {
-        m_Game->update();
-        m_Game->render();
-        glfwSwapBuffers(m_Window);
-        glfwPollEvents();
-    }
+void Window::swapBuffers() const {
+    glfwSwapBuffers(m_Window);
 }
+
+bool Window::shouldClose() const {
+    return glfwWindowShouldClose(m_Window);
+}
+
+void Window::pollEvents() {
+    glfwPollEvents();
+}
+
+int Window::width() const {
+    return m_Width;
+}
+
+int Window::height() const {
+    return m_Height;
+}
+
+
+
+
+

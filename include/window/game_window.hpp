@@ -1,19 +1,27 @@
 #ifndef SNAKE_GAME_WINDOW_HPP
 #define SNAKE_GAME_WINDOW_HPP
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <string_view>
 
-#include "game/snake_game.hpp"
+#include <glm/glm.hpp>
+
+struct GLFWwindow;
 
 class Window {
 public:
-    Window(int width, int height, const char *title);
+    Window(int width, int height, const std::string_view& title);
     ~Window();
-    void run() const;
-protected:
+
+    void swapBuffers() const;
+    [[nodiscard]] bool shouldClose() const;
+    [[nodiscard]] int width() const;
+    [[nodiscard]] int height() const;
+
+    static void pollEvents();
+private:
     GLFWwindow* m_Window;
-    Game* m_Game;
+    int m_Width;
+    int m_Height;
 };
 
 #endif //SNAKE_GAME_WINDOW_HPP
