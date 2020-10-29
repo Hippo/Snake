@@ -11,23 +11,24 @@ struct SnakeVertex {
 };
 
 inline VertexBuffer createVertexBuffer() {
-    std::array<SnakeVertex, 4> vertices = {
+    SnakeVertex vertices[] = {
             SnakeVertex{glm::vec2(0.5f, 0.5f)},
             SnakeVertex{glm::vec2(0.5f, -0.5f)},
             SnakeVertex{glm::vec2(-0.5f, -0.5f)},
             SnakeVertex{glm::vec2(-0.5f, 0.5f)}
     };
 
-    std::array<uint32_t, 6> indices = {
+    uint32_t indices[] = {
             0, 1, 3, 1, 2, 3
     };
 
 
     VertexBuffer vertexBuffer(
-            vertices.data(),
-            sizeof(SnakeVertex) * vertices.size(),
-            reinterpret_cast<const uint32_t*>(indices.data()),
-            indices.size());
+            vertices,
+            sizeof(SnakeVertex) * 4,
+            indices,
+            6);
+
     VertexBuffer::defineAttribute(0, 2, GL_FLOAT, sizeof(SnakeVertex), 0);
     VertexBuffer::defineAttribute(1, 3, GL_FLOAT, sizeof(SnakeVertex), offsetof(SnakeVertex, color));
     return vertexBuffer;
