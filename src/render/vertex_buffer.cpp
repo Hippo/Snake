@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-VertexBuffer::VertexBuffer(const void* vertices, size_t size, const uint32_t* indices, size_t indexCount) : m_Vao(), m_Vbo(), m_Ebo(), m_IndexCount(indexCount) {
+VertexBuffer::VertexBuffer(const void* vertices, size_t size, const uint32_t* indices, size_t indexCount) : m_IndexCount(indexCount) { //NOLINT
     glGenVertexArrays(1, &m_Vao);
     glBindVertexArray(m_Vao);
 

@@ -10,7 +10,7 @@ public:
     Shader(const std::string_view& vertexPath, const std::string_view& fragmentPath);
     ~Shader();
 
-    void use() const;
+    void bind() const;
     int32_t getUniformLocation(const std::string_view& name) const;
 
 private:

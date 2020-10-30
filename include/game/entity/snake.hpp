@@ -5,11 +5,13 @@
 
 #include "game/vertex/game_vertex.hpp"
 #include "render/vertex_buffer.hpp"
+#include "shader/shader.hpp"
 
 class Snake {
 public:
     Snake();
-    void progress(const glm::ivec2 move);
+    void progress(glm::ivec2 move);
+    void render(const Shader& shader) const;
 private:
     std::deque<Vertex> m_Nodes;
     VertexBuffer m_VertexBuffer;

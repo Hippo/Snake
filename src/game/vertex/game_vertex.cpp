@@ -25,3 +25,7 @@ glm::vec3 Vertex::color() const {
     return m_Color;
 }
 
+Vertex Vertex::makeSnakeVertex(glm::ivec2 position) {
+    return Vertex(position, glm::vec3(0, 1, 0));
+}
+

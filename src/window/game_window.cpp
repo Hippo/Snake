@@ -1,6 +1,7 @@
 #include "window/game_window.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -13,7 +14,9 @@ Window::Window(const int width, const int height, const std::string_view& title)
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+
         m_Window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+        glfwSetWindowAspectRatio(m_Window, std::max(width, height), std::min(width, height));
         glfwMakeContextCurrent(m_Window);
 
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
@@ -21,9 +24,10 @@ Window::Window(const int width, const int height, const std::string_view& title)
             throw std::runtime_error("Failed to initialize GLAD.");
         }
 
-        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow*, int width, int height) {
-            glViewport(0, 0, width, height);
+        glfwSetErrorCallback([](int,const char* message) {
+            std::cerr << message << '\n';
         });
+
     } else {
         glfwTerminate();
         throw std::runtime_error("Failed to initialize game window.");
@@ -53,8 +57,3 @@ int Window::width() const {
 int Window::height() const {
     return m_Height;
 }
-
-
-
-
-

@@ -1,6 +1,7 @@
 #ifndef SNAKE_SNAKE_GAME_HPP
 #define SNAKE_SNAKE_GAME_HPP
 
+#include "game/entity/snake.hpp"
 #include "window/game_window.hpp"
 #include "shader/shader.hpp"
 
@@ -16,8 +17,7 @@ public:
 private:
     Window m_Window;
     Shader m_Shader;
-    glm::mat4 m_Projection;
-
+    Snake m_Snake;
 };
 
 #endif //SNAKE_SNAKE_GAME_HPP

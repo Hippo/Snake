@@ -3,6 +3,7 @@
 
 #include "game/snake_game.hpp"
 
+
 int main() {
     try {
         Game().run();

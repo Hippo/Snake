@@ -50,14 +50,13 @@ Shader::Shader(const std::string_view& vertexPath, const std::string_view& fragm
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-
 }
 
 Shader::~Shader() {
     glDeleteProgram(m_Id);
 }
 
-void Shader::use() const {
+void Shader::bind() const {
     glUseProgram(m_Id);
 }
 
