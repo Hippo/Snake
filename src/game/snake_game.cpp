@@ -1,13 +1,14 @@
 #include "game/snake_game.hpp"
 
 #include <iostream>
+#include <queue>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+static std::queue<int> s_KeyQueue;
 
 Game::Game() :
     m_Window(800, 600, "Snake"),
@@ -37,7 +38,13 @@ void Game::run() {
 }
 
 void Game::update() {
+    if (!s_KeyQueue.empty()) {
+        int key = s_KeyQueue.front();
+        s_KeyQueue.pop();
 
+        m_Snake.handleKeyPress(key);
+    }
+    m_Snake.update();
 }
 
 void Game::render() const {
@@ -49,8 +56,15 @@ void Game::render() const {
     }
 }
 
-void Game::onKeyPress(GLFWwindow *, int key, int, int action, int) {
+void Game::onKeyPress(GLFWwindow*, int key, int, int action, int) {
     if (action == GLFW_PRESS) {
-        //TODO: direction
+        switch (key) { //NOLINT
+            case GLFW_KEY_UP:
+            case GLFW_KEY_DOWN:
+            case GLFW_KEY_LEFT:
+            case GLFW_KEY_RIGHT:
+                s_KeyQueue.push(key);
+               break;
+        }
     }
 }

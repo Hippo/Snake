@@ -1,15 +1,16 @@
 #include "game/entity/snake.hpp"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 inline VertexBuffer createVertexBuffer() {
     glm::vec2 vertices[] = {
-            glm::vec2(0.5f, 0.4f),
-            glm::vec2(0.5f, -0.5f),
-            glm::vec2(-0.5f, -0.5f),
-            glm::vec2(-0.5f, 0.4f)
+            glm::vec2(0.4f, 0.4f),
+            glm::vec2(0.4f, -0.4f),
+            glm::vec2(-0.4f, -0.4f),
+            glm::vec2(-0.4f, 0.4f)
     };
 
     uint32_t indices[] = {
@@ -27,12 +28,11 @@ inline VertexBuffer createVertexBuffer() {
     return vertexBuffer;
 }
 
-Snake::Snake() : m_VertexBuffer(std::move(createVertexBuffer())) {
+Snake::Snake() : m_VertexBuffer(std::move(createVertexBuffer())), m_Direction(Direction::NONE) {
     for (int i = 0; i < 3; i++) {
         m_Nodes.push_back(Vertex::makeSnakeVertex(glm::ivec2(0, i)));
     }
 }
-#include <iostream>
 
 void Snake::progress(const glm::ivec2 move) {
     auto head = m_Nodes.back();
@@ -41,10 +41,8 @@ void Snake::progress(const glm::ivec2 move) {
     m_Nodes.pop_front();
 
 
-    std::cout << tail.position().x << " " << tail.position().y << " | " << head.position().x << " " << head.position().y << std::endl;
     tail.move(head.position());
     head.translate(move);
-    std::cout << tail.position().x << " " << tail.position().y << " | " << head.position().x << " " << head.position().y << std::endl;
 
 
     m_Nodes.push_back(tail);
@@ -63,5 +61,64 @@ void Snake::render(const Shader& shader) const {
         glUniform3f(color, 0.0f, 1.0f, 0.0f);
 
         m_VertexBuffer.draw();
+    }
+}
+
+void Snake::handleKeyPress(int key) {
+    switch (key) { //NOLINT
+        case GLFW_KEY_UP:
+            if (m_Direction != Direction::DOWN) {
+                progress(glm::ivec2(0, 1));
+                m_Direction = Direction::UP;
+                m_SkipTicks++;
+            }
+            break;
+
+        case GLFW_KEY_DOWN:
+            if (m_Direction != Direction::UP) {
+                progress(glm::ivec2(0, -1));
+                m_Direction = Direction::DOWN;
+                m_SkipTicks++;
+            }
+            break;
+
+        case GLFW_KEY_LEFT:
+            if (m_Direction != Direction::RIGHT) {
+                progress(glm::ivec2(-1, 0));
+                m_Direction = Direction::LEFT;
+                m_SkipTicks++;
+            }
+            break;
+
+        case GLFW_KEY_RIGHT:
+            if (m_Direction != Direction::LEFT) {
+                progress(glm::ivec2(1, 0));
+                m_Direction = Direction::RIGHT;
+                m_SkipTicks++;
+            }
+            break;
+    }
+}
+
+void Snake::update() {
+    if (m_SkipTicks > 0) {
+        m_SkipTicks--;
+    } else {
+        switch (m_Direction) {
+            case Direction::NONE:
+                break;
+            case Direction::UP:
+                progress(glm::ivec2(0, 1));
+                break;
+            case Direction::DOWN:
+                progress(glm::ivec2(0, -1));
+                break;
+            case Direction::LEFT:
+                progress(glm::ivec2(-1, 0));
+                break;
+            case Direction::RIGHT:
+                progress(glm::ivec2(1, 0));
+                break;
+        }
     }
 }

@@ -1,6 +1,7 @@
 #ifndef SNAKE_SNAKE_GAME_HPP
 #define SNAKE_SNAKE_GAME_HPP
 
+
 #include "game/entity/snake.hpp"
 #include "window/game_window.hpp"
 #include "shader/shader.hpp"
