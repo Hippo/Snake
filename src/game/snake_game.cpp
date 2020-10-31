@@ -3,8 +3,11 @@
 #include <iostream>
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+
 
 Game::Game() :
     m_Window(800, 600, "Snake"),
@@ -14,25 +17,27 @@ Game::Game() :
 Game::~Game() {
 }
 
-
 void Game::run() {
-    float width = m_Window.width();
-    float height = m_Window.height();
+    float width = static_cast<float>(m_Window.width()) / 10.0f;
+    float height = static_cast<float>(m_Window.height()) / 10.0f;
 
     m_Shader.bind();
     glm::mat4 projection = glm::ortho(width / -2.0f, width / 2.0f, height / -2.0f, height / 2.0f);
     GLuint projectionMatrix = m_Shader.getUniformLocation("projectionMatrix");
     glUniformMatrix4fv(projectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
 
+    m_Window.setKeyPressCallback(onKeyPress);
 
     while (!m_Window.shouldClose()) {
+        update();
         render();
         m_Window.swapBuffers();
         Window::pollEvents();
     }
 }
 
-void Game::update() const {
+void Game::update() {
+
 }
 
 void Game::render() const {
@@ -41,5 +46,11 @@ void Game::render() const {
     GLint error = glGetError();
     if (error) {
         std::cout << error << '\n';
+    }
+}
+
+void Game::onKeyPress(GLFWwindow *, int key, int, int action, int) {
+    if (action == GLFW_PRESS) {
+        //TODO: direction
     }
 }

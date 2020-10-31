@@ -4,14 +4,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-
 inline VertexBuffer createVertexBuffer() {
     glm::vec2 vertices[] = {
-            glm::vec2(10.5f, 10.5f),
-            glm::vec2(10.5f, -10.5f),
-            glm::vec2(-10.5f, -10.5f),
-            glm::vec2(-10.5f, 10.5f)
+            glm::vec2(0.5f, 0.4f),
+            glm::vec2(0.5f, -0.5f),
+            glm::vec2(-0.5f, -0.5f),
+            glm::vec2(-0.5f, 0.4f)
     };
 
     uint32_t indices[] = {
@@ -30,9 +28,11 @@ inline VertexBuffer createVertexBuffer() {
 }
 
 Snake::Snake() : m_VertexBuffer(std::move(createVertexBuffer())) {
-    m_Nodes.push_back(Vertex::makeSnakeVertex(glm::ivec2(0, 0)));
+    for (int i = 0; i < 3; i++) {
+        m_Nodes.push_back(Vertex::makeSnakeVertex(glm::ivec2(0, i)));
+    }
 }
-
+#include <iostream>
 
 void Snake::progress(const glm::ivec2 move) {
     auto head = m_Nodes.back();
@@ -40,8 +40,12 @@ void Snake::progress(const glm::ivec2 move) {
     m_Nodes.pop_back();
     m_Nodes.pop_front();
 
+
+    std::cout << tail.position().x << " " << tail.position().y << " | " << head.position().x << " " << head.position().y << std::endl;
     tail.move(head.position());
-    head.move(move);
+    head.translate(move);
+    std::cout << tail.position().x << " " << tail.position().y << " | " << head.position().x << " " << head.position().y << std::endl;
+
 
     m_Nodes.push_back(tail);
     m_Nodes.push_back(head);

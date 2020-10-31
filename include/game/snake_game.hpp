@@ -11,9 +11,9 @@ public:
     ~Game();
 
     void run();
-    void update() const;
+    void update();
     void render() const;
-
+    static void onKeyPress(GLFWwindow*, int key, int, int action, int);
 private:
     Window m_Window;
     Shader m_Shader;
