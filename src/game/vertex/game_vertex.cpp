@@ -1,9 +1,7 @@
 #include "game/vertex/game_vertex.hpp"
 
 
-Vertex::Vertex(const glm::ivec2 position, const glm::vec3 color) : m_Position(position), m_Color(color) {
-
-}
+Vertex::Vertex(const glm::ivec2 position, const glm::vec3 color) : m_Position(position), m_Color(color) {}
 
 void Vertex::translate(const glm::ivec2 move) {
     m_Position += move;

@@ -1,6 +1,6 @@
 #include "game/snake_game.hpp"
 
-#include <iostream>
+#include <chrono>
 #include <queue>
 
 #include <glad/glad.h>
@@ -8,7 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 static std::queue<int> s_KeyQueue;
+
+#define MILLIS() std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
 
 Game::Game() :
     m_Window(800, 600, "Snake"),
@@ -22,6 +25,10 @@ void Game::run() {
     float width = static_cast<float>(m_Window.width()) / 10.0f;
     float height = static_cast<float>(m_Window.height()) / 10.0f;
 
+    glm::vec4 border = glm::vec4(width / -2.0f, height / -2.0f, width / 2.0f,  height / 2.0f);
+    m_Snake.setBorder(border);
+    m_Snake.spawnApple();
+
     m_Shader.bind();
     glm::mat4 projection = glm::ortho(width / -2.0f, width / 2.0f, height / -2.0f, height / 2.0f);
     GLuint projectionMatrix = m_Shader.getUniformLocation("projectionMatrix");
@@ -29,8 +36,17 @@ void Game::run() {
 
     m_Window.setKeyPressCallback(onKeyPress);
 
+    constexpr int delay = 1000 / 15;
+    long last = MILLIS();
+
     while (!m_Window.shouldClose()) {
-        update();
+        long now = MILLIS();
+
+        if (now - last >= delay) {
+            update();
+            last = now;
+        }
+
         render();
         m_Window.swapBuffers();
         Window::pollEvents();
@@ -50,10 +66,6 @@ void Game::update() {
 void Game::render() const {
     glClear(GL_COLOR_BUFFER_BIT);
     m_Snake.render(m_Shader);
-    GLint error = glGetError();
-    if (error) {
-        std::cout << error << '\n';
-    }
 }
 
 void Game::onKeyPress(GLFWwindow*, int key, int, int action, int) {

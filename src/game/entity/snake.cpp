@@ -1,5 +1,7 @@
 #include "game/entity/snake.hpp"
 
+#include <random>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -28,25 +30,74 @@ inline VertexBuffer createVertexBuffer() {
     return vertexBuffer;
 }
 
+
 Snake::Snake() : m_VertexBuffer(std::move(createVertexBuffer())), m_Direction(Direction::NONE) {
-    for (int i = 0; i < 3; i++) {
-        m_Nodes.push_back(Vertex::makeSnakeVertex(glm::ivec2(0, i)));
-    }
+    reset();
 }
 
 void Snake::progress(const glm::ivec2 move) {
     auto head = m_Nodes.back();
-    auto tail = m_Nodes.front();
     m_Nodes.pop_back();
-    m_Nodes.pop_front();
 
+    glm::ivec2 originalHead = head.position();
 
-    tail.move(head.position());
     head.translate(move);
 
+    float minX = m_Border.x;
+    float minY = m_Border.y;
+    float maxX = m_Border.z;
+    float maxY = m_Border.w;
 
-    m_Nodes.push_back(tail);
+    glm::vec2 position = head.position();
+
+
+    if (position.x > maxX) {
+        position.x = minX;
+
+    } else if (position.x < minX) {
+        position.x = maxX;
+    }
+
+
+    if (position.y > maxY) {
+        position.y = minY;
+    } else if (position.y < minY) {
+        position.y = maxY;
+    }
+
+    head.move(glm::ivec2(position.x, position.y));
+
+    int removed = 0;
+    for (auto it = m_Apples.begin(); it != m_Apples.end(); it++) {
+        if (it->collides(head)) {
+            m_Apples.erase(it--);
+            removed++;
+        }
+    }
+    for (int i = 0; i < removed; i++) {
+        spawnApple();
+    }
+
+    if (removed > 0) {
+        m_Nodes.push_back(Vertex::makeSnakeVertex(originalHead));
+    } else {
+        auto tail = m_Nodes.front();
+        m_Nodes.pop_front();
+        tail.move(originalHead);
+        m_Nodes.push_back(tail);
+    }
+
+
+    for (const auto& node : m_Nodes) {
+        if (head.collides(node)) {
+            reset();
+            return;
+        }
+    }
+
+
     m_Nodes.push_back(head);
+
 }
 
 void Snake::render(const Shader& shader) const {
@@ -58,10 +109,19 @@ void Snake::render(const Shader& shader) const {
     for (const auto& node : m_Nodes) {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(node.position(), 0.0f));
         glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform3f(color, 0.0f, 1.0f, 0.0f);
+        glUniform3fv(color, 1, glm::value_ptr(node.color()));
 
         m_VertexBuffer.draw();
     }
+
+    for (const auto& apple : m_Apples) {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(apple.position(), 0.0f));
+        glUniformMatrix4fv(modelMatrix, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform3fv(color, 1, glm::value_ptr(apple.color()));
+
+        m_VertexBuffer.draw();
+    }
+
 }
 
 void Snake::handleKeyPress(int key) {
@@ -121,4 +181,65 @@ void Snake::update() {
                 break;
         }
     }
+}
+
+void Snake::reset() {
+    m_Nodes.clear();
+    m_Direction = Direction::NONE;
+    m_SkipTicks = 0;
+    int i;
+    for (i = 0; i < 3; i++) {
+        m_Nodes.push_back(Vertex::makeSnakeVertex(glm::ivec2(0, i)));
+    }
+    m_Nodes.emplace_back(glm::ivec2(0, i), glm::vec3(1, 1, 1));
+}
+
+void Snake::setBorder(glm::vec4 border) {
+    m_Border = border;
+}
+
+void Snake::spawnApple() {
+    float minX = m_Border.x;
+    float minY = m_Border.y;
+    float maxX = m_Border.z;
+    float maxY = m_Border.w;
+
+    std::random_device randomDevice;
+    std::mt19937 mt(randomDevice());
+    std::uniform_real_distribution<float> xDistribution(minX, maxX);
+    std::uniform_real_distribution<float> yDistribution(minY, maxY);
+
+    float x = xDistribution(mt);
+    float y = yDistribution(mt);
+
+    bool valid = false;
+
+    while (!valid) {
+        bool pass = true;
+
+        for (const auto& node : m_Nodes) {
+            glm::ivec2 position = node.position();
+            if (position.x == x && position.y == y) {
+                pass = false;
+                break;
+            }
+        }
+
+        for (const auto& apple : m_Apples) {
+            glm::ivec2 position = apple.position();
+            if (position.x == x && position.y == y) {
+                pass = false;
+                break;
+            }
+        }
+
+        if (!pass) {
+            x = xDistribution(mt);
+            y = yDistribution(mt);
+        }
+
+        valid = pass;
+    }
+
+    m_Apples.emplace_back(glm::ivec2(x, y), glm::vec3(1, 0, 0));
 }

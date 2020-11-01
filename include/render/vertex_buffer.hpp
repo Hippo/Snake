@@ -7,10 +7,10 @@
 class VertexBuffer {
 public:
     VertexBuffer(const void* vertices, size_t size, const uint32_t* indices, size_t indexCount);
-
+    VertexBuffer(VertexBuffer& other) = default;
     VertexBuffer(VertexBuffer&& other) noexcept;
-
     ~VertexBuffer();
+
     void bind() const;
     void draw() const;
     static void defineAttribute(int index, int size, uint32_t type, int32_t stride, size_t offest);

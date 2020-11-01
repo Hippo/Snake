@@ -17,8 +17,8 @@ public:
     static Vertex makeSnakeVertex(glm::ivec2 position);
 
 private:
-    glm::ivec2 m_Position;
-    glm::vec3 m_Color;
+    glm::ivec2 m_Position{};
+    glm::vec3 m_Color{};
 };
 
 #endif //SNAKE_GAME_VERTEX_HPP

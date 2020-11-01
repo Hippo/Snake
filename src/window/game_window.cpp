@@ -58,10 +58,6 @@ int Window::height() const {
     return m_Height;
 }
 
-bool Window::isKeyPressed(int key) const {
-    return glfwGetKey(m_Window, key) == GLFW_PRESS;
-}
-
 void Window::setKeyPressCallback(void (*callback)(GLFWwindow*, int, int, int, int)) {
     glfwSetKeyCallback(m_Window, callback);
 }
