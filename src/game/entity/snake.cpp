@@ -225,11 +225,13 @@ void Snake::spawnApple() {
             }
         }
 
-        for (const auto& apple : m_Apples) {
-            glm::ivec2 position = apple.position();
-            if (position.x == x && position.y == y) {
-                pass = false;
-                break;
+        if (pass) {
+            for (const auto& apple : m_Apples) {
+                glm::ivec2 position = apple.position();
+                if (position.x == x && position.y == y) {
+                    pass = false;
+                    break;
+                }
             }
         }
 
