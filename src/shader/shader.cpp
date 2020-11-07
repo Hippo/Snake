@@ -51,8 +51,23 @@ Shader::Shader(const std::string_view& vertexPath, const std::string_view& fragm
     glDeleteShader(fragment);
 }
 
+Shader::Shader(Shader&& other) noexcept {
+    m_Id = other.m_Id;
+    other.m_Id = -1;
+}
+
+Shader& Shader::operator=(Shader&& other) noexcept {
+    if (this != &other) {
+        m_Id = other.m_Id;
+        other.m_Id = -1;
+    }
+    return *this;
+}
+
 Shader::~Shader() {
-    glDeleteProgram(m_Id);
+    if (m_Id != -1) {
+        glDeleteProgram(m_Id);
+    }
 }
 
 void Shader::bind() const {
@@ -62,3 +77,5 @@ void Shader::bind() const {
 GLint Shader::getUniformLocation(const std::string_view& name) const {
     return glGetUniformLocation(m_Id, name.data());
 }
+
+

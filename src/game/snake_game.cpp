@@ -18,9 +18,6 @@ Game::Game() :
     m_Shader("assets/shader/shader.vert", "assets/shader/shader.frag") {
 }
 
-Game::~Game() {
-}
-
 void Game::run() {
     float width = static_cast<float>(m_Window.width()) / 10.0f;
     float height = static_cast<float>(m_Window.height()) / 10.0f;

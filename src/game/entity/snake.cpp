@@ -197,7 +197,6 @@ void Snake::reset() {
 void Snake::setBorder(glm::vec4 border) {
     m_Border = border;
 }
-
 void Snake::spawnApple() {
     float minX = m_Border.x;
     float minY = m_Border.y;
@@ -209,8 +208,8 @@ void Snake::spawnApple() {
     std::uniform_real_distribution<float> xDistribution(minX, maxX);
     std::uniform_real_distribution<float> yDistribution(minY, maxY);
 
-    float x = xDistribution(mt);
-    float y = yDistribution(mt);
+    int x = xDistribution(mt);
+    int y = yDistribution(mt);
 
     bool valid = false;
 

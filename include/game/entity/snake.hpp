@@ -17,6 +17,7 @@ public:
     };
 
     Snake();
+
     void progress(glm::ivec2 move);
     void handleKeyPress(int key);
     void update();

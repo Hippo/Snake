@@ -7,8 +7,10 @@
 class VertexBuffer {
 public:
     VertexBuffer(const void* vertices, size_t size, const uint32_t* indices, size_t indexCount);
-    VertexBuffer(VertexBuffer& other) = default;
+    VertexBuffer(const VertexBuffer& other) = delete;
     VertexBuffer(VertexBuffer&& other) noexcept;
+    VertexBuffer& operator=(const VertexBuffer& other) = delete;
+    VertexBuffer& operator=(VertexBuffer&& other) noexcept;
     ~VertexBuffer();
 
     void bind() const;

@@ -8,9 +8,15 @@
 
 struct GLFWwindow;
 
+static int s_WindowCounter;
+
 class Window {
 public:
     Window(int width, int height, const std::string_view& title);
+    Window(const Window& other) = delete;
+    Window(Window&& other) noexcept;
+    Window& operator=(const Window& other) = delete;
+    Window& operator=(Window&& other) noexcept;
     ~Window();
 
     void swapBuffers() const;

@@ -8,6 +8,10 @@
 class Shader {
 public:
     Shader(const std::string_view& vertexPath, const std::string_view& fragmentPath);
+    Shader(const Shader& other) = delete;
+    Shader(Shader&& other) noexcept;
+    Shader& operator=(const Shader& other) = delete;
+    Shader& operator=(Shader&& other) noexcept;
     ~Shader();
 
     void bind() const;

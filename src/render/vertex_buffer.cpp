@@ -27,6 +27,21 @@ VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept {
     other.m_IndexCount = 0;
 }
 
+VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept {
+    if (this != &other) {
+        m_Vao = other.m_Vao;
+        m_Vbo = other.m_Vbo;
+        m_Ebo = other.m_Ebo;
+        m_IndexCount = other.m_IndexCount;
+
+        other.m_Vao = -1;
+        other.m_Vbo = -1;
+        other.m_Ebo = -1;
+        other.m_IndexCount = 0;
+    }
+    return *this;
+}
+
 VertexBuffer::~VertexBuffer() {
     if (m_Vao == -1 && m_Vbo == -1 && m_Ebo == -1) {
         glDeleteVertexArrays(1, &m_Vao);
