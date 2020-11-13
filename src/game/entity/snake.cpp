@@ -27,11 +27,11 @@ inline VertexBuffer createVertexBuffer() {
             6);
 
     VertexBuffer::defineAttribute(0, 2, GL_FLOAT, sizeof(glm::vec2), 0);
-    return vertexBuffer;
+    return std::move(vertexBuffer);
 }
 
 
-Snake::Snake() : m_VertexBuffer(std::move(createVertexBuffer())), m_Direction(Direction::NONE) {
+Snake::Snake() : m_VertexBuffer(createVertexBuffer()), m_Direction(Direction::NONE) { // NOLINT
     reset();
 }
 

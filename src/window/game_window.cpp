@@ -42,8 +42,7 @@ Window::Window(Window&& other) noexcept {
 
 Window& Window::operator=(Window&& other) noexcept {
     if (this != &other) {
-        m_Window = other.m_Window;
-        other.m_Window = nullptr;
+        std::swap(m_Window, other.m_Window);
     }
     return *this;
 }
